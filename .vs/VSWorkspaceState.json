@@ -1,12 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\DashboardBlazor",
     "\\DashboardBlazor\\Components",
     "\\DashboardBlazor\\Components\\Pages",
-    "\\DashboardBlazor\\wwwroot",
-    "\\Python"
+    "\\DashboardBlazor\\wwwroot"
   ],
-  "SelectedNode": "\\DashboardBlazor\\Components\\Pages\\TaxaSelic.razor",
+  "SelectedNode": "\\DashboardBlazor",
   "PreviewInSolutionExplorer": false
 }
