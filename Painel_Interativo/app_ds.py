@@ -2,8 +2,11 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from bcb import sgs
+from PreparacaoDeDados import carregar_dados
 
 # --- CLASSES DO PROJETO ---
+
+
 
 class Indicador:
     def __init__(self, nome, codigo):
@@ -18,14 +21,32 @@ class Indicador:
         return df
 
 class PainelIndicadores:
-    def __init__(self):
-        self.indicadores = {
-            'Selic': 11,
-            'IPCA': 4449,
-            'IGP-M': 189,
-            'Dólar': 1
-        }
-        self.df_final = None
+    def __init__(self, dfSelic, dfIpca, dfSMin, dfIgpm, dfInad, df_indicadores):
+        self.dfSelic = dfSelic
+        self.dfIpca = dfIpca
+        self.dfSMin = dfSMin
+        self.dfIgpm = dfIgpm
+        self.dfInad = dfInad
+        self.df_indicadores = df_indicadores
+        
+    def filtrar(self, nome_indicador):
+        if nome_indicador == 'Selic':
+            return self.dfSelic[['Data', 'Selic', 'Variacao_Selic']]
+        elif nome_indicador == 'IPCA':
+            return self.dfIpca[['Data', 'Ipca', 'Variacao_Ipca']]
+        elif nome_indicador == 'Salario Mínimo':
+            return self.dfSMin[['Data', 'Salario_Minimo', 'Variacao_Salario']]
+        elif nome_indicador == 'IGPM':
+            return self.dfIgpm[['Data', 'Igpm', 'Variacao_Igpm']]
+        elif nome_indicador == 'Inadimplência':
+            return self.dfInad[['Data', 'Inadimplencia', 'Variacao_Inad']]
+        else:
+            raise ValueError("Indicador não encontrado.")
+    
+    def obter_indicadores(self):
+        return ['Selic', 'IPCA', 'Salario Mínimo', 'IGPM', 'Inadimplência', 'Indicadores Derivados']
+
+
 
     def carregar_dados(self):
         dados = []
@@ -34,8 +55,6 @@ class PainelIndicadores:
             dados.append(indicador.obter_dados())
         self.df_final = pd.concat(dados)
 
-    def filtrar(self, nome_indicador):
-        return self.df_final[self.df_final['Indicador'] == nome_indicador]
 
 
 class AppStreamlit:
@@ -47,7 +66,7 @@ class AppStreamlit:
         st.title(' Painel de Indicadores Econômicos')
         st.write('Fonte: Banco Central do Brasil (BCB)')
 
-        indicadores = self.painel.df_final['Indicador'].unique()
+        indicadores = self.painel.obter_indicadores()
         indicador_escolhido = st.selectbox('Escolha um indicador:', indicadores)
 
         df_filtrado = self.painel.filtrar(indicador_escolhido)
@@ -57,9 +76,9 @@ class AppStreamlit:
 
     def _exibir_grafico(self, df, nome):
         fig = px.line(
-            df, x='Data', y='Valor',
+            df, x='Data', y=df.columns[1],
             title=f'Evolução do {nome}',
-            labels={'Valor': 'Valor', 'Data': 'Data'},
+            labels={df.columns[1]: 'Valor', 'Data': 'Data'},
             template='plotly_dark'
         )
         st.plotly_chart(fig, use_container_width=True)
@@ -72,8 +91,8 @@ class AppStreamlit:
 # --- EXECUÇÃO DO APP ---
 
 if __name__ == '__main__':
-    painel = PainelIndicadores()
-    painel.carregar_dados()
+    dfSelic, dfIpca, dfSMin, dfIgpm, dfInad, df_indicadores = carregar_dados()
+    painel = PainelIndicadores(dfSelic, dfIpca, dfSMin, dfIgpm, dfInad, df_indicadores)
 
     app_ui = AppStreamlit(painel)
     app_ui.exibir()
