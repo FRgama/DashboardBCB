@@ -1,98 +1,142 @@
 import streamlit as st
-import pandas as pd
 import plotly.express as px
-from bcb import sgs
+import pandas as pd
 from PreparacaoDeDados import carregar_dados
 
-# --- CLASSES DO PROJETO ---
-
-
-
-class Indicador:
-    def __init__(self, nome, codigo):
-        self.nome = nome
-        self.codigo = codigo
-
-    def obter_dados(self, inicio='2025-01-01'):
-        df = sgs.get(self.codigo, start=inicio)
-        df.reset_index(inplace=True)
-        df.rename(columns={'index': 'Data', self.nome: 'Valor'}, inplace=True)
-        df['Indicador'] = self.nome
-        return df
-
-class PainelIndicadores:
-    def __init__(self, dfSelic, dfIpca, dfSMin, dfIgpm, dfInad, df_indicadores):
-        self.dfSelic = dfSelic
-        self.dfIpca = dfIpca
-        self.dfSMin = dfSMin
-        self.dfIgpm = dfIgpm
-        self.dfInad = dfInad
-        self.df_indicadores = df_indicadores
-        
-    def filtrar(self, nome_indicador):
-        if nome_indicador == 'Selic':
-            return self.dfSelic[['Data', 'Selic', 'Variacao_Selic']]
-        elif nome_indicador == 'IPCA':
-            return self.dfIpca[['Data', 'Ipca', 'Variacao_Ipca']]
-        elif nome_indicador == 'Salario Mínimo':
-            return self.dfSMin[['Data', 'Salario_Minimo', 'Variacao_Salario']]
-        elif nome_indicador == 'IGPM':
-            return self.dfIgpm[['Data', 'Igpm', 'Variacao_Igpm']]
-        elif nome_indicador == 'Inadimplência':
-            return self.dfInad[['Data', 'Inadimplencia', 'Variacao_Inad']]
-        else:
-            raise ValueError("Indicador não encontrado.")
-    
-    def obter_indicadores(self):
-        return ['Selic', 'IPCA', 'Salario Mínimo', 'IGPM', 'Inadimplência', 'Indicadores Derivados']
-
-
-
-    def carregar_dados(self):
-        dados = []
-        for nome, codigo in self.indicadores.items():
-            indicador = Indicador(nome, codigo)
-            dados.append(indicador.obter_dados())
-        self.df_final = pd.concat(dados)
-
-
-
 class AppStreamlit:
-    def __init__(self, painel):
-        self.painel = painel
+    def __init__(self):
+        # Carregar dados
+        self.dfSelic, self.dfIpca, self.dfSMin, self.dfIgpm, self.dfInad, self.df_indicadores = carregar_dados()
 
     def exibir(self):
         st.set_page_config(layout='wide')
-        st.title(' Painel de Indicadores Econômicos')
-        st.write('Fonte: Banco Central do Brasil (BCB)')
+        st.title('Painel de Indicadores Econômicos')
 
-        indicadores = self.painel.obter_indicadores()
-        indicador_escolhido = st.selectbox('Escolha um indicador:', indicadores)
+        st.sidebar.title("Seleção de Indicadores")
+        indicadores = ['Selic', 'IPCA', 'Salario Mínimo', 'IGPM', 'Inadimplência', 'Indicadores Derivados']
+        indicadores_selecionados = st.sidebar.multiselect("Escolha os Indicadores para comparação", indicadores)
 
-        df_filtrado = self.painel.filtrar(indicador_escolhido)
+        if indicadores_selecionados:
+            df_comparacao = self._preparar_comparacao(indicadores_selecionados)
+            self._exibir_grafico_linha(df_comparacao)
+            self._exibir_grafico_dispersao(df_comparacao)
+            self._exibir_grafico_barras(df_comparacao)
+            self._exibir_grafico_boxplot(df_comparacao)
 
-        self._exibir_grafico(df_filtrado, indicador_escolhido)
-        self._exibir_dados(df_filtrado)
+    def _preparar_comparacao(self, indicadores_selecionados):
+        df_comparado = pd.DataFrame()
 
-    def _exibir_grafico(self, df, nome):
-        fig = px.line(
-            df, x='Data', y=df.columns[1],
-            title=f'Evolução do {nome}',
-            labels={df.columns[1]: 'Valor', 'Data': 'Data'},
-            template='plotly_dark'
-        )
-        st.plotly_chart(fig, use_container_width=True)
+        if 'Selic' in indicadores_selecionados:
+            df_comparado['Data'] = self.dfSelic['Data']
+            df_comparado['Selic'] = self.dfSelic['Selic']
 
-    def _exibir_dados(self, df):
-        st.write(' **Dados Brutos:**')
-        st.dataframe(df)
+        if 'IPCA' in indicadores_selecionados:
+            df_comparado['Ipca'] = self.dfIpca['Ipca']
 
+        if 'Salario Mínimo' in indicadores_selecionados:
+            if 'Data' in self.dfSMin.columns:  # Verifique se a coluna 'Data' existe
+                df_comparado['Data'] = self.dfSMin['Data']  # Caso não tenha sido adicionado anteriormente
+            df_comparado['Salario_Minimo'] = self.dfSMin['Salario_Minimo']
 
-# --- EXECUÇÃO DO APP ---
+        if 'IGPM' in indicadores_selecionados:
+            df_comparado['Igpm'] = self.dfIgpm['Igpm']
 
+        if 'Inadimplência' in indicadores_selecionados:
+            df_comparado['Inadimplencia'] = self.dfInad['Inadimplencia']
+
+        if 'Indicadores Derivados' in indicadores_selecionados:
+            df_comparado = pd.concat([df_comparado, self.df_indicadores], axis=1)
+
+        # Verificar se 'Data' está presente em df_comparado e garantir que seja convertido para datetime
+        if 'Data' in df_comparado.columns:
+            df_comparado['Data'] = pd.to_datetime(df_comparado['Data'], errors='coerce')
+        else:
+            st.warning("A coluna 'Data' não está presente em todos os DataFrames. Verifique seus dados.")
+
+        df_comparado = df_comparado.dropna(subset=['Data'])
+
+        return df_comparado
+
+    def _exibir_grafico_linha(self, df):
+        st.subheader('Gráfico de Linha')
+        
+        if df.empty:
+            st.error("Não há dados suficientes para exibir o gráfico de linha.")
+            return
+
+        try:
+            fig = px.line(
+                df, x='Data', y=df.columns[1:],  # Usar todas as colunas exceto 'Data'
+                title="Evolução dos Indicadores ao Longo do Tempo",
+                labels={'Data': 'Data', 'value': 'Valor'},
+                template='plotly_dark'
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        except Exception as e:
+            st.error(f"Erro ao criar o gráfico de linha: {e}")
+
+    def _exibir_grafico_dispersao(self, df):
+        st.subheader('Gráfico de Dispersão')
+        
+        if df.empty:
+            st.error("Não há dados suficientes para exibir o gráfico de dispersão.")
+            return
+
+        try:
+            indicador_1 = st.selectbox("Escolha o primeiro indicador para dispersão:", df.columns[1:])
+            indicador_2 = st.selectbox("Escolha o segundo indicador para dispersão:", df.columns[1:])
+
+            fig = px.scatter(
+                df, x=indicador_1, y=indicador_2,
+                title=f"Dispersão entre {indicador_1} e {indicador_2}",
+                labels={indicador_1: indicador_1, indicador_2: indicador_2},
+                template='plotly_dark'
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        except Exception as e:
+            st.error(f"Erro ao criar o gráfico de dispersão: {e}")
+
+    def _exibir_grafico_barras(self, df):
+        st.subheader('Gráfico de Barras')
+        
+        if df.empty:
+            st.error("Não há dados suficientes para exibir o gráfico de barras.")
+            return
+
+        try:
+            indicador_comparacao = st.selectbox("Escolha o indicador para barras:", df.columns[1:])
+
+            fig = px.bar(
+                df, x='Data', y=indicador_comparacao,
+                title=f"Comparação de {indicador_comparacao} ao longo do tempo",
+                labels={'Data': 'Data', indicador_comparacao: indicador_comparacao},
+                template='plotly_dark'
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        except Exception as e:
+            st.error(f"Erro ao criar o gráfico de barras: {e}")
+
+    def _exibir_grafico_boxplot(self, df):
+        st.subheader('Gráfico de Boxplot')
+        
+        if df.empty:
+            st.error("Não há dados suficientes para exibir o gráfico de boxplot.")
+            return
+
+        try:
+            indicador_boxplot = st.selectbox("Escolha o indicador para Boxplot:", df.columns[1:])
+
+            fig = px.box(
+                df, y=indicador_boxplot,
+                title=f"Distribuição de {indicador_boxplot}",
+                labels={indicador_boxplot: indicador_boxplot},
+                template='plotly_dark'
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        except Exception as e:
+            st.error(f"Erro ao criar o gráfico de boxplot: {e}")
+
+# Execução do App
 if __name__ == '__main__':
-    dfSelic, dfIpca, dfSMin, dfIgpm, dfInad, df_indicadores = carregar_dados()
-    painel = PainelIndicadores(dfSelic, dfIpca, dfSMin, dfIgpm, dfInad, df_indicadores)
-
-    app_ui = AppStreamlit(painel)
-    app_ui.exibir()
+    app = AppStreamlit()
+    app.exibir()

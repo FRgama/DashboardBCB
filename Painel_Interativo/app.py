@@ -1,46 +1,87 @@
-#obs: para rodar o painel, digite 'streamlit run app.py' no terminal
-
+import streamlit as st
 import pandas as pd
 import plotly.express as px
-import streamlit as st
-from bcb import sgs
+from PreparacaoDeDados import carregar_dados
 
-#Dicionário de Indicadores Macroeconômicos
-indicadores = {
-    'Selic': 11,
-    'IPCA': 4449,
-    'IGP-M': 189,
-    'Dólar': 1
-}
+class Indicador:
+    def __init__(self, nome, codigo):
+        self.nome = nome
+        self.codigo = codigo
 
-#Baixando os dados a partir de 2000
-dados = {nome: sgs.get(codigo, start='2020-01-01') for nome, codigo in indicadores.items()}
+    def obter_dados(self, inicio='2020-01-01'):
+        df = sgs.get(self.codigo, start=inicio)
+        df.reset_index(inplace=True)
+        df.rename(columns={'index': 'Data', self.nome: 'Valor'}, inplace=True)
+        df['Indicador'] = self.nome
+        return df
 
-#Convertendo para dataframe e resetando o índice
-for nome, df in dados.items():
-    df.reset_index(inplace=True)
-    df.rename(columns={'index': 'Data', nome: 'Valor'}, inplace=True)
-    #df["Data"] = pd.to_datetime(df["Data"], format='%Y-%m-%d')
-    #df["Valor"] = pd.to_numeric(df["Valor"], errors='coerce')
-    #df.dropna(subset=["Valor"], inplace=True)
-    df['Indicador'] = nome
+class PainelIndicadores:
+    def __init__(self, dfSelic, dfIpca, dfSMin, dfIgpm, dfInad, df_indicadores):
+        self.dfSelic = dfSelic
+        self.dfIpca = dfIpca
+        self.dfSMin = dfSMin
+        self.dfIgpm = dfIgpm
+        self.dfInad = dfInad
+        self.df_indicadores = df_indicadores
 
-df_final = pd.concat(dados.values())
+    def filtrar(self, nome_indicador):
+        # Garantir que a comparação seja feita de forma consistente
+        nome_indicador = nome_indicador.strip().lower()
+        
+        if nome_indicador == 'selic':
+            return self.dfSelic[['Data', 'Selic', 'Variacao_Selic']]
+        elif nome_indicador == 'ipca':
+            return self.dfIpca[['Data', 'Ipca', 'Variacao_Ipca']]
+        elif nome_indicador == 'salario mínimo':
+            return self.dfSMin[['Data', 'Salario_Minimo', 'Variacao_Salario']]
+        elif nome_indicador == 'igpm':
+            return self.dfIgpm[['Data', 'Igpm', 'Variacao_Igpm']]
+        elif nome_indicador == 'inadimplência':
+            return self.dfInad[['Data', 'Inadimplencia', 'Variacao_Inad']]
+        elif nome_indicador == 'indicadores derivados':
+            return self.df_indicadores
+        else:
+            raise ValueError(f"Indicador '{nome_indicador}' não encontrado.")
 
-st.set_page_config(layout='wide')
-st.title('📊 Painel de Indicadores Econômicos')
-st.write('Fonte: Banco Central do Brasil (BCB)')
+    def obter_indicadores(self):
+        return ['Selic', 'IPCA', 'Salario Mínimo', 'IGPM', 'Inadimplência', 'Indicadores Derivados']
 
-indicador_escolhido = st.selectbox('Escolha um indicador:', df_final['Indicador'].unique())
+class AppStreamlit:
+    def __init__(self, painel):
+        self.painel = painel
 
-df_filtrado = df_final[df_final['Indicador'] == indicador_escolhido]
+    def exibir(self):
+        st.set_page_config(layout='wide')
+        st.title('Painel de Indicadores Econômicos')
+        st.write('Fonte: Banco Central do Brasil (BCB)')
 
-#Gráfico interativo com plotly dash
-fig = px.line(df_filtrado, x='Date', y='Indicador', title=f'Evolução do {indicador_escolhido}',
-              labels={'Indicador': 'Valor', 'Date': 'Data'}, template='plotly_dark')
+        indicadores = self.painel.obter_indicadores()
+        indicador_escolhido = st.selectbox('Escolha um indicador:', indicadores)
 
-st.plotly_chart(fig, use_container_width=True)
+        # Filtro de dados
+        df_filtrado = self.painel.filtrar(indicador_escolhido.lower())  # Garantir que o nome seja minúsculo
 
-#Exibindo a tela de dados
-st.write('📅 **Dados Brutos:**')
-st.dataframe(df_filtrado)
+        self._exibir_grafico(df_filtrado, indicador_escolhido)
+        self._exibir_dados(df_filtrado)
+
+    def _exibir_grafico(self, df, nome):
+        fig = px.line(
+            df, x='Data', y=df.columns[1],
+            title=f'Evolução do {nome}',
+            labels={df.columns[1]: 'Valor', 'Data': 'Data'},
+            template='plotly_dark'
+        )
+        st.plotly_chart(fig, use_container_width=True)
+
+    def _exibir_dados(self, df):
+        st.write('**Dados Brutos:**')
+        st.dataframe(df)
+
+# Execução do App
+if __name__ == '__main__':
+    # Carregar os dados corretamente
+    dfSelic, dfIpca, dfSMin, dfIgpm, dfInad, df_indicadores = carregar_dados()
+
+    painel = PainelIndicadores(dfSelic, dfIpca, dfSMin, dfIgpm, dfInad, df_indicadores)
+    app_ui = AppStreamlit(painel)
+    app_ui.exibir()

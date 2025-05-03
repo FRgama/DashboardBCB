@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 #Começando pela taxa Selic
 def plotar_selic():
 
-    selic = sgs.get({'Selic' : 1178}, start='2020-01-01')
+    selic = sgs.get({'Selic' : 1178}, start='2010-01-01')
     dfSelic = selic.reset_index()
 
     plt.figure(figsize=(10, 5))
