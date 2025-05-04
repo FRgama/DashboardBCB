@@ -3,17 +3,24 @@ import plotly.express as px
 import pandas as pd
 from PreparacaoDeDados import carregar_dados
 
+Ipca = 'IPCA'
+Selic = 'Selic'
+SalarioMinimo = 'Salario Mínimo'
+Igpm = 'IGPM'
+Inadimplencia = 'Inadimplência'
+
+
 class AppStreamlit:
     def __init__(self):
         # Carregar dados
-        self.dfSelic, self.dfIpca, self.dfSMin, self.dfIgpm, self.dfInad, self.df_indicadores = carregar_dados()
+        self.dfSelic, self.dfIpca, self.dfSMin, self.dfIgpm, self.dfInad = carregar_dados()
 
     def exibir(self):
         st.set_page_config(layout='wide')
         st.title('Painel de Indicadores Econômicos')
 
         st.sidebar.title("Seleção de Indicadores")
-        indicadores = ['Selic', 'IPCA', 'Salario Mínimo', 'IGPM', 'Inadimplência', 'Indicadores Derivados']
+        indicadores = [Selic, Ipca, SalarioMinimo, Igpm, Inadimplencia]
         indicadores_selecionados = st.sidebar.multiselect("Escolha os Indicadores para comparação", indicadores)
 
         if indicadores_selecionados:
@@ -26,36 +33,44 @@ class AppStreamlit:
     def _preparar_comparacao(self, indicadores_selecionados):
         df_comparado = pd.DataFrame()
 
-        if 'Selic' in indicadores_selecionados:
-            df_comparado['Data'] = self.dfSelic['Data']
-            df_comparado['Selic'] = self.dfSelic['Selic']
+        # Comece pela Data base (por exemplo, Selic)
+        df_base = self.dfSelic.copy()
+        df_base['Data'] = pd.to_datetime(df_base['Data'], errors='coerce')
+        df_base = df_base.dropna(subset=['Data'])
+        df_base.set_index('Data', inplace=True)
+        
+        if Selic in indicadores_selecionados:
+            df_comparado['Selic'] = df_base['Selic']
 
-        if 'IPCA' in indicadores_selecionados:
-            df_comparado['Ipca'] = self.dfIpca['Ipca']
+        if Ipca in indicadores_selecionados:
+            df_ipca = self.dfIpca.copy()
+            df_ipca['Data'] = pd.to_datetime(df_ipca['Data'], errors='coerce')
+            df_ipca.set_index('Data', inplace=True)
+            df_comparado = df_comparado.join(df_ipca['Ipca'], how='outer')
 
-        if 'Salario Mínimo' in indicadores_selecionados:
-            if 'Data' in self.dfSMin.columns:  # Verifique se a coluna 'Data' existe
-                df_comparado['Data'] = self.dfSMin['Data']  # Caso não tenha sido adicionado anteriormente
-            df_comparado['Salario_Minimo'] = self.dfSMin['Salario_Minimo']
+        if SalarioMinimo in indicadores_selecionados:
+            df_smin = self.dfSMin.copy()
+            df_smin['Data'] = pd.to_datetime(df_smin['Data'], errors='coerce')
+            df_smin.set_index('Data', inplace=True)
+            df_comparado = df_comparado.join(df_smin['Salario_Minimo'], how='outer')
 
-        if 'IGPM' in indicadores_selecionados:
-            df_comparado['Igpm'] = self.dfIgpm['Igpm']
+        if Igpm in indicadores_selecionados:
+            df_igpm = self.dfIgpm.copy()
+            df_igpm['Data'] = pd.to_datetime(df_igpm['Data'], errors='coerce')
+            df_igpm.set_index('Data', inplace=True)
+            df_comparado = df_comparado.join(df_igpm['Igpm'], how='outer')
 
-        if 'Inadimplência' in indicadores_selecionados:
-            df_comparado['Inadimplencia'] = self.dfInad['Inadimplencia']
+        if Inadimplencia in indicadores_selecionados:
+            df_inad = self.dfInad.copy()
+            df_inad['Data'] = pd.to_datetime(df_inad['Data'], errors='coerce')
+            df_inad.set_index('Data', inplace=True)
+            df_comparado = df_comparado.join(df_inad['Inadimplencia'], how='outer')
 
-        if 'Indicadores Derivados' in indicadores_selecionados:
-            df_comparado = pd.concat([df_comparado, self.df_indicadores], axis=1)
-
-        # Verificar se 'Data' está presente em df_comparado e garantir que seja convertido para datetime
-        if 'Data' in df_comparado.columns:
-            df_comparado['Data'] = pd.to_datetime(df_comparado['Data'], errors='coerce')
-        else:
-            st.warning("A coluna 'Data' não está presente em todos os DataFrames. Verifique seus dados.")
-
-        df_comparado = df_comparado.dropna(subset=['Data'])
+        df_comparado = df_comparado.dropna(how='all')  # remove linhas onde todos indicadores são NaN
+        df_comparado.reset_index(inplace=True)  # volta com a coluna Data
 
         return df_comparado
+
 
     def _exibir_grafico_linha(self, df):
         st.subheader('Gráfico de Linha')
@@ -107,7 +122,7 @@ class AppStreamlit:
             indicador_comparacao = st.selectbox("Escolha o indicador para barras:", df.columns[1:])
 
             fig = px.bar(
-                df, x='Data', y=indicador_comparacao,
+                df, x=Data, y=indicador_comparacao,
                 title=f"Comparação de {indicador_comparacao} ao longo do tempo",
                 labels={'Data': 'Data', indicador_comparacao: indicador_comparacao},
                 template='plotly_dark'

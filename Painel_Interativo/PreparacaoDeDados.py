@@ -5,7 +5,7 @@ from bcb import sgs
 def carregar_dados():
     # Carregando os dados
     dfSelic = sgs.get({'Selic': 1178}, start='2020-01-01')
-    dfIpca = sgs.get({'Ipca': 4449}, start='2020-01-01')
+    dfIpca = sgs.get({'Ipca': 433}, start='2020-01-01')
     dfSMin = sgs.get({'Salario_Minimo': 1619}, start='2020-01-01')
     dfIgpm = sgs.get({'Igpm': 189}, start='2020-01-01')
     dfInad = sgs.get({'Inadimplencia': 21082}, start='2020-01-01')
@@ -62,4 +62,4 @@ def carregar_dados():
     df_indicadores = df_geral[['Data', 'Salario_Real', 'Diferenca_Inflacao']]
 
     # Retornando os DataFrames processados
-    return dfSelic, dfIpca, dfSMin, dfIgpm, dfInad, df_indicadores
+    return dfSelic, dfIpca, dfSMin, dfIgpm, dfInad
