@@ -9,6 +9,9 @@ def carregar_dados():
     dfSMin = sgs.get({'Salario_Minimo': 1619}, start='2020-01-01')
     dfIgpm = sgs.get({'Igpm': 189}, start='2020-01-01')
     dfInad = sgs.get({'Inadimplencia': 21082}, start='2020-01-01')
+    dfInadFamilia = sgs.get({'Inadimplencia_Familia': 2074}, start='2020-01-01')
+    dfCredTotal = sgs.get({'CredTotal': 20631}, start='2020-01-01')
+    dfDolar = sgs.get({'Dolar': 1}, start='2020-01-01')
 
     # Função para ajustar colunas e renomear
     def ajuste_colunas(df, nome_coluna):
@@ -22,6 +25,10 @@ def carregar_dados():
     dfSMin = ajuste_colunas(dfSMin, 'Salario_Minimo')
     dfIgpm = ajuste_colunas(dfIgpm, 'Igpm')
     dfInad = ajuste_colunas(dfInad, 'Inadimplencia')
+    dfInadFamilia = ajuste_colunas(dfInadFamilia, 'Inadimplencia_Familia')
+    dfCredTotal = ajuste_colunas(dfCredTotal, 'CredTotal')
+    dfDolar = ajuste_colunas(dfDolar, 'Dolar')
+
 
     # Ajustando as datas
     def ajuste_data(df):
@@ -34,6 +41,9 @@ def carregar_dados():
     dfSMin = ajuste_data(dfSMin)
     dfIgpm = ajuste_data(dfIgpm)
     dfInad = ajuste_data(dfInad)
+    dfInadFamilia = ajuste_data(dfInadFamilia)
+    dfCredTotal = ajuste_data(dfCredTotal)
+    dfDolar = ajuste_data(dfDolar)
 
     # Transformando a taxa Selic para mensal
     dfSelic = dfSelic.set_index('Data').resample('MS').first().reset_index()
@@ -48,7 +58,9 @@ def carregar_dados():
     dfSMin = variacao(dfSMin, 'Salario_Minimo', 'Variacao_Salario')
     dfIgpm = variacao(dfIgpm, 'Igpm', 'Variacao_Igpm')
     dfInad = variacao(dfInad, 'Inadimplencia', 'Variacao_Inad')
-
+    dfInadFamilia = variacao(dfInadFamilia, 'Inadimplencia_Familia', 'Variacao_Inad_Familia')
+    dfCredTotal = variacao(dfCredTotal, 'CredTotal', 'Variacao_CredTotal')
+    dfDolar = variacao(dfDolar, 'Dolar', 'Variacao_Dolar')
     # Integrando os dados
     df_geral = dfSelic.merge(dfIpca, on='Data', how='inner') \
                       .merge(dfSMin, on='Data', how='inner') \
@@ -59,7 +71,6 @@ def carregar_dados():
     df_geral['Salario_Real'] = df_geral['Salario_Minimo'] / (1 + df_geral['Ipca'] / 100)
     df_geral['Diferenca_Inflacao'] = df_geral['Igpm'] - df_geral['Ipca']
 
-    df_indicadores = df_geral[['Data', 'Salario_Real', 'Diferenca_Inflacao']]
-
+    
     # Retornando os DataFrames processados
-    return dfSelic, dfIpca, dfSMin, dfIgpm, dfInad
+    return dfSelic, dfIpca, dfSMin, dfIgpm, dfInad, dfInadFamilia, dfCredTotal, dfDolar
