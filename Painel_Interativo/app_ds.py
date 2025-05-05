@@ -53,12 +53,12 @@ class AppStreamlit:
             return df_comparado
 
         df_comparado = join_df(IPCA, self.df_ipca, 'Ipca')
-        df_comparado = join_df(SALARIO_MINIMO, self.df_salario, 'Salario_Minimo')
+        df_comparado = join_df(SALARIO_MINIMO, self.df_salario, 'Salario Mínimo')
         df_comparado = join_df(IGPM, self.df_igpm, 'Igpm')
-        df_comparado = join_df(INADIMPLENCIA, self.df_inad, 'Inadimplencia')
-        df_comparado = join_df(INADIMPLENCIA_FAMILIA, self.df_inad_familia, 'Inadimplencia_Familia')
-        df_comparado = join_df(CREDITO_TOTAL, self.df_cred_total, 'CredTotal')
-        df_comparado = join_df(DOLAR, self.df_dolar, 'Dolar')
+        df_comparado = join_df(INADIMPLENCIA, self.df_inad, 'Inadimplência')
+        df_comparado = join_df(INADIMPLENCIA_FAMILIA, self.df_inad_familia, 'Inadimplência Familiar')
+        df_comparado = join_df(CREDITO_TOTAL, self.df_cred_total, 'Crédito Total')
+        df_comparado = join_df(DOLAR, self.df_dolar, 'Dólar')
 
         df_comparado = df_comparado.dropna(how='all').reset_index()
         return df_comparado

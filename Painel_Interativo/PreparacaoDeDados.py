@@ -15,12 +15,12 @@ def carregar_dados():
 
     dfSelic = obter_dado(1178, 'Selic')
     dfIpca = obter_dado(433, 'Ipca')
-    dfSMin = obter_dado(1619, 'Salario_Minimo')
+    dfSMin = obter_dado(1619, 'Salario Mínimo')
     dfIgpm = obter_dado(189, 'Igpm')
-    dfInad = obter_dado(21082, 'Inadimplencia')
-    dfInadFamilia = obter_dado(29038, 'Inadimplencia_Familia')
-    dfCredTotal = obter_dado(20631, 'CredTotal')
-    dfDolar = obter_dado(1, 'Dolar')
+    dfInad = obter_dado(21082, 'Inadimplência')
+    dfInadFamilia = obter_dado(29038, 'Inadimplência Familiar')
+    dfCredTotal = obter_dado(20631, 'Crédito Total')
+    dfDolar = obter_dado(1, 'Dólar')
 
     # Ajuste Selic para frequência mensal
     if not dfSelic.empty:
