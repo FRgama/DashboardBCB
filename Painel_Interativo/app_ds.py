@@ -1,6 +1,8 @@
 import streamlit as st
 import plotly.express as px
 import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
 from PreparacaoDeDados import carregar_dados
 
 SELIC = 'Selic'
@@ -30,6 +32,7 @@ class AppStreamlit:
             self._exibir_grafico_dispersao(df)
             self._exibir_grafico_barras(df)
             self._exibir_grafico_boxplot(df)
+            self._exibir_matriz_correlacao(df)
 
     def _preparar_comparacao(self, selecionados):
         df_base = self.df_selic.copy()
@@ -107,6 +110,26 @@ class AppStreamlit:
             st.plotly_chart(fig, use_container_width=True)
         except Exception as e:
             st.error(f"Erro no gráfico de boxplot: {e}")
+
+    def _exibir_matriz_correlacao(self, df):
+        st.subheader('Matriz de Correlação de Pearson')
+        if df.empty or df.shape[1] <= 2:
+            st.info("Selecione pelo menos dois indicadores para gerar a matriz de correlação.")
+            return
+        try:
+            df_corr = df.drop(columns=['Data']).corr(method='pearson')
+
+            fig = px.imshow(
+                df_corr,
+                text_auto=True,
+                color_continuous_scale='RdBu_r',
+                title="Correlação de Pearson entre Indicadores",
+                aspect='auto',
+                template='plotly_dark'
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        except Exception as e:
+            st.error(f"Erro ao gerar a matriz de correlação: {e}")
 
 
 if __name__ == '__main__':
