@@ -28,22 +28,22 @@ O objetivo é analisar e prever indicadores econômicos relevantes, contribuindo
 |<br>
 |-->documentos<br>
   &emsp;|-->Entrega 1<br>
-    &emsp;|-->Analise Inferencial 
-    &emsp;|-->Ciencia de Dados
-    &emsp;|-->Contabilidade
-    &emsp;|-->Documentação
-    &emsp;|-->ES & AS
+    &emsp;|-->Analise Inferencial<br>
+    &emsp;|-->Ciencia de Dados<br>
+    &emsp;|-->Contabilidade<br>
+    &emsp;|-->Documentação<br>
+    &emsp;|-->ES & AS<br>
   &emsp;|-->Entrega 2<br>
-    &emsp;|-->Analise Inferencial 
-    &emsp;|-->Ciencia de Dados
-    &emsp;|-->Contabilidade 
-    &emsp;|-->ES & AS
+    &emsp;|-->Analise Inferencial<br> 
+    &emsp;|-->Ciencia de Dados<br>
+    &emsp;|-->Contabilidade<br> 
+    &emsp;|-->ES & AS<br>
  &emsp;|-->Entrega 3<br>
 |-->Painel_Interativo<br>
-  &emsp;|-->_pycache_
-  &emsp;|-->pages
+  &emsp;|-->_pycache_<br>
+  &emsp;|-->pages<br>
 |-->Python<br>
-  &emsp;|-->_pycache_
+  &emsp;|-->_pycache_<br>
 |Projeto1.sln<br>
 |readme.md<br>
 
@@ -56,6 +56,7 @@ Não há instalação!
 Para abrir este projeto você necessita das seguintes ferramentas:
 
 -<a href="https://www.r-project.org/">R</a>
+
 -<a href="https://posit.co/download/rstudio-desktop/">RStudio</a>
 
 ## 📋 Licença/License
