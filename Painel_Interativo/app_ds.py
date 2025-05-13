@@ -3,6 +3,9 @@ import plotly.express as px
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import r2_score
 from PreparacaoDeDados import carregar_dados
 
 SELIC = 'Selic'
@@ -33,6 +36,32 @@ class AppStreamlit:
             self._exibir_grafico_barras(df)
             self._exibir_grafico_boxplot(df)
             self._exibir_matriz_correlacao(df)
+
+            # NOVA SEÇÃO: Regressão Linear Múltipla
+            st.subheader("Regressão Linear Múltipla")
+            if df.shape[1] > 2:
+                target = st.selectbox("Selecione o indicador a ser previsto (variável dependente):", df.columns[1:], key="reg_target")
+                features = st.multiselect("Selecione as variáveis preditoras (independentes):", [col for col in df.columns[1:] if col != target], key="reg_features")
+
+                if features and st.button("Executar Regressão"):
+                    df_modelo = df.dropna(subset=[target] + features)
+                    X = df_modelo[features]
+                    y = df_modelo[target]
+
+                    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+                    modelo = LinearRegression()
+                    modelo.fit(X_train, y_train)
+
+                    y_pred = modelo.predict(X_test)
+                    r2 = r2_score(y_test, y_pred)
+
+                    st.write(f"**R² (coeficiente de determinação):** {r2:.2f}")
+                    st.write("**Coeficientes do modelo:**")
+                    for var, coef in zip(features, modelo.coef_):
+                        st.write(f"- {var}: {coef:.4f}")
+
+                    fig_pred = px.scatter(x=y_test, y=y_pred, labels={'x': 'Valor Real', 'y': 'Valor Previsto'}, title="Valor Real vs. Valor Previsto", template='plotly_dark')
+                    st.plotly_chart(fig_pred, use_container_width=True)
 
     def _preparar_comparacao(self, selecionados):
         df_base = self.df_selic.copy()
