@@ -44,6 +44,7 @@ O objetivo é analisar e prever indicadores econômicos relevantes, contribuindo
   &emsp;|-->pages<br>
 |-->Python<br>
   &emsp;|-->_pycache_<br>
+|-->imagens<br>
 |Projeto1.sln<br>
 |readme.md<br>
 
