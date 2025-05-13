@@ -4,7 +4,7 @@ from bcb import sgs
 def carregar_dados():
     def obter_dado(codigo, nome):
         try:
-            df = sgs.get({nome: codigo}, start='2020-01-01')
+            df = sgs.get({nome: codigo}, start='2016-01-01')
             df = df.reset_index()
             df.columns = ['Data', nome]
             df['Data'] = pd.to_datetime(df['Data'], dayfirst=True)

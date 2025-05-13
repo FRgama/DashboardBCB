@@ -26,22 +26,32 @@ class AppStreamlit:
         indicadores = [SELIC, IPCA, SALARIO_MINIMO, IGPM, INADIMPLENCIA, INADIMPLENCIA_FAMILIA, CREDITO_TOTAL, DOLAR]
         selecionados = st.sidebar.multiselect("Escolha os Indicadores para comparação", indicadores)
 
+        df_base = self.df_selic.copy()
+        df_base['Data'] = pd.to_datetime(df_base['Data'], errors='coerce')
+        data_minima = df_base['Data'].min().replace(day=1)
+        data_maxima = df_base['Data'].max().replace(day=1)
+
+        data_inicial = st.sidebar.date_input("A partir de:", data_minima, min_value=data_minima, max_value=data_maxima)
+
+
         if selecionados:
-            df = self._preparar_comparacao(selecionados)
+            data_inicial = pd.to_datetime(data_inicial).replace(day=1)
+            df = self._preparar_comparacao(selecionados, data_inicial)
             self._exibir_grafico_linha(df)
             self._exibir_grafico_dispersao(df)
             self._exibir_grafico_barras(df)
             self._exibir_grafico_boxplot(df)
             self._exibir_matriz_correlacao(df)
 
-    def _preparar_comparacao(self, selecionados):
+    def _preparar_comparacao(self, selecionados, data_inicial):
         df_base = self.df_selic.copy()
         df_base['Data'] = pd.to_datetime(df_base['Data'], errors='coerce')
         df_base = df_base.dropna(subset=['Data']).set_index('Data')
+        df_base = df_base[df_base.index >= data_inicial]
 
         df_comparado = pd.DataFrame(index=df_base.index)
 
-        if SELIC in selecionados and not self.df_selic.empty:
+        if SELIC in selecionados:
             df_comparado['Selic'] = df_base['Selic']
 
         def join_df(indicador, df, coluna):
@@ -49,6 +59,9 @@ class AppStreamlit:
                 temp = df.copy()
                 temp['Data'] = pd.to_datetime(temp['Data'], errors='coerce')
                 temp.set_index('Data', inplace=True)
+
+                temp = temp[temp.index >= data_inicial]
+                
                 return df_comparado.join(temp[[coluna]], how='outer')
             return df_comparado
 
