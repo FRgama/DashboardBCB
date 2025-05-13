@@ -29,48 +29,33 @@ class AppStreamlit:
         indicadores = [SELIC, IPCA, SALARIO_MINIMO, IGPM, INADIMPLENCIA, INADIMPLENCIA_FAMILIA, CREDITO_TOTAL, DOLAR]
         selecionados = st.sidebar.multiselect("Escolha os Indicadores para comparação", indicadores)
 
+        df_base = self.df_selic.copy()
+        df_base['Data'] = pd.to_datetime(df_base['Data'], errors='coerce')
+        data_minima = df_base['Data'].min().replace(day=1)
+        data_maxima = df_base['Data'].max().replace(day=1)
+
+        data_inicial = st.sidebar.date_input("A partir de:", data_minima, min_value=data_minima, max_value=data_maxima)
+
+
         if selecionados:
-            df = self._preparar_comparacao(selecionados)
+            data_inicial = pd.to_datetime(data_inicial).replace(day=1)
+            df = self._preparar_comparacao(selecionados, data_inicial)
             self._exibir_grafico_linha(df)
             self._exibir_grafico_dispersao(df)
             self._exibir_grafico_barras(df)
             self._exibir_grafico_boxplot(df)
             self._exibir_matriz_correlacao(df)
 
-            # NOVA SEÇÃO: Regressão Linear Múltipla
-            st.subheader("Regressão Linear Múltipla")
-            if df.shape[1] > 2:
-                target = st.selectbox("Selecione o indicador a ser previsto (variável dependente):", df.columns[1:], key="reg_target")
-                features = st.multiselect("Selecione as variáveis preditoras (independentes):", [col for col in df.columns[1:] if col != target], key="reg_features")
-
-                if features and st.button("Executar Regressão"):
-                    df_modelo = df.dropna(subset=[target] + features)
-                    X = df_modelo[features]
-                    y = df_modelo[target]
-
-                    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-                    modelo = LinearRegression()
-                    modelo.fit(X_train, y_train)
-
-                    y_pred = modelo.predict(X_test)
-                    r2 = r2_score(y_test, y_pred)
-
-                    st.write(f"**R² (coeficiente de determinação):** {r2:.2f}")
-                    st.write("**Coeficientes do modelo:**")
-                    for var, coef in zip(features, modelo.coef_):
-                        st.write(f"- {var}: {coef:.4f}")
-
-                    fig_pred = px.scatter(x=y_test, y=y_pred, labels={'x': 'Valor Real', 'y': 'Valor Previsto'}, title="Valor Real vs. Valor Previsto", template='plotly_dark')
-                    st.plotly_chart(fig_pred, use_container_width=True)
-
-    def _preparar_comparacao(self, selecionados):
+    
+    def _preparar_comparacao(self, selecionados, data_inicial):
         df_base = self.df_selic.copy()
         df_base['Data'] = pd.to_datetime(df_base['Data'], errors='coerce')
         df_base = df_base.dropna(subset=['Data']).set_index('Data')
+        df_base = df_base[df_base.index >= data_inicial]
 
         df_comparado = pd.DataFrame(index=df_base.index)
 
-        if SELIC in selecionados and not self.df_selic.empty:
+        if SELIC in selecionados:
             df_comparado['Selic'] = df_base['Selic']
 
         def join_df(indicador, df, coluna):
@@ -78,6 +63,9 @@ class AppStreamlit:
                 temp = df.copy()
                 temp['Data'] = pd.to_datetime(temp['Data'], errors='coerce')
                 temp.set_index('Data', inplace=True)
+
+                temp = temp[temp.index >= data_inicial]
+                
                 return df_comparado.join(temp[[coluna]], how='outer')
             return df_comparado
 
@@ -160,6 +148,30 @@ class AppStreamlit:
         except Exception as e:
             st.error(f"Erro ao gerar a matriz de correlação: {e}")
 
+            st.subheader("Regressão Linear Múltipla")
+            if df.shape[1] > 2:
+                target = st.selectbox("Selecione o indicador a ser previsto (variável dependente):", df.columns[1:], key="reg_target")
+                features = st.multiselect("Selecione as variáveis preditoras (independentes):", [col for col in df.columns[1:] if col != target], key="reg_features")
+
+                if features and st.button("Executar Regressão"):
+                    df_modelo = df.dropna(subset=[target] + features)
+                    X = df_modelo[features]
+                    y = df_modelo[target]
+
+                    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+                    modelo = LinearRegression()
+                    modelo.fit(X_train, y_train)
+
+                    y_pred = modelo.predict(X_test)
+                    r2 = r2_score(y_test, y_pred)
+
+                    st.write(f"**R² (coeficiente de determinação):** {r2:.2f}")
+                    st.write("**Coeficientes do modelo:**")
+                    for var, coef in zip(features, modelo.coef_):
+                        st.write(f"- {var}: {coef:.4f}")
+
+                    fig_pred = px.scatter(x=y_test, y=y_pred, labels={'x': 'Valor Real', 'y': 'Valor Previsto'}, title="Valor Real vs. Valor Previsto", template='plotly_dark')
+                    st.plotly_chart(fig_pred, use_container_width=True)
 
 if __name__ == '__main__':
     app = AppStreamlit()
