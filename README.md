@@ -13,9 +13,9 @@
 ## Descrição
 
 <p align="center">
-<img src="imagens/Neon_logo.png" alt="NEON" border="0">
+<img src="imagens/NubankLogo.png" alt="Nubank" border="0">
 
-Nosso projeto é uma iniciativa acadêmica que busca demonstrar uma predição de dados macroeconômicos disponibilizados pelo Banco Central do Brasil, com foco em auxiliar estrategicamente empresas como a Neon.
+Nosso projeto é uma iniciativa acadêmica que busca demonstrar uma predição de dados macroeconômicos disponibilizados pelo Banco Central do Brasil, com foco em auxiliar estrategicamente empresas como a Nubank.
 
 
 <a>
