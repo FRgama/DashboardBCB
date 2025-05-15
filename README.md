@@ -3,9 +3,9 @@
 <a href= "https://www.fecap.br/"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhZPrRa89Kma0ZZogxm0pi-tCn_TLKeHGVxywp-LXAFGR3B1DPouAJYHgKZGV0XTEf4AE&usqp=CAU" alt="FECAP - Fundação de Comércio Álvares Penteado" border="0"></a>
 </p>
 
-# Projeto NEON  
+# Projeto Nubank  
 
-## Grupo 1 
+## Grupo 1 - PurplePush
 
 ## Integrantes: <a href="https://www.linkedin.com/in/sabrinna-vicente-049225306/">Sabrinna Cristina Gomes Vicente</a>, <a href="https://www.linkedin.com/in/biaib/">Beatriz de Souza Santos Rio Branco</a>, <a href="https://www.linkedin.com/in/rodrigocgama04/">Rodrigo Correa da Gama</a>, <a href="https://www.linkedin.com/in/s%C3%A1tiro-gabriel-27081430b/">Sátiro Gabriel de Souza Santos</a>
 ## Professores Orientadores: <a href="https://www.linkedin.com/in/professorrodnil/">Rodnil da Silva</a>, <a href="https://www.linkedin.com/in/lucymari/">Lucy Mary Tabuti</a>, <a href="https://www.linkedin.com/in/paula-astorino-432b5812a/">Paula Astorino</a>, <a href="https://www.linkedin.com/in/eduardo-savino-gomes-77833a10/">Eduardo Savino Gomes</a>
