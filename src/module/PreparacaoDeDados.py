@@ -15,7 +15,7 @@ def carregar_dados():
 
     dfSelic = obter_dado(1178, 'Selic')
     dfIpca = obter_dado(433, 'Ipca')
-    dfSMin = obter_dado(24381, 'Remuneração Média Deflacionada')
+    dfMediaDeflacionada = obter_dado(24381, 'Remuneração Média Deflacionada')
     dfIgpm = obter_dado(189, 'Igpm')
     dfInad = obter_dado(21082, 'Inadimplência')
     dfInadFamilia = obter_dado(29038, 'Inadimplência Familiar')
@@ -26,4 +26,4 @@ def carregar_dados():
     if not dfSelic.empty:
         dfSelic = dfSelic.set_index('Data').resample('MS').first().reset_index()
 
-    return dfSelic, dfIpca, dfSMin, dfIgpm, dfInad, dfInadFamilia, dfCredTotal, dfDolar
+    return dfSelic, dfIpca, dfMediaDeflacionada, dfIgpm, dfInad, dfInadFamilia, dfCredTotal, dfDolar
