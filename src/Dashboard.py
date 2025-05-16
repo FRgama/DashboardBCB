@@ -1,6 +1,6 @@
 import streamlit as st
 import pandas as pd
-from module.PreparacaoDeDados import carregar_dados
+from module.preparacaoDeDados import carregar_dados
 from module.graph import Graficos
 from module.regression import Regressao
 
