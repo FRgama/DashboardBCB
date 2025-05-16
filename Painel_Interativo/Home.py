@@ -6,7 +6,7 @@ from module.regression import Regressao
 
 SELIC = 'Selic'
 IPCA = 'IPCA'
-SALARIO_MINIMO = 'Salário Mínimo'
+REMUNERACAO_DEFLACIONADA = 'Remuneração Média Deflacionada'
 IGPM = 'IGPM'
 INADIMPLENCIA = 'Inadimplência'
 INADIMPLENCIA_FAMILIA = 'Inadimplência Família'
@@ -24,7 +24,7 @@ class AppStreamlit:
         st.title('Painel de Indicadores Econômicos')
 
         st.sidebar.title("Seleção de Indicadores")
-        indicadores = [SELIC, IPCA, SALARIO_MINIMO, IGPM, INADIMPLENCIA, INADIMPLENCIA_FAMILIA, CREDITO_TOTAL, DOLAR]
+        indicadores = [SELIC, IPCA, REMUNERACAO_DEFLACIONADA, IGPM, INADIMPLENCIA, INADIMPLENCIA_FAMILIA, CREDITO_TOTAL, DOLAR]
         selecionados = st.sidebar.multiselect("Escolha os Indicadores para comparação", indicadores)
 
         df_base = self.df_selic.copy()
@@ -67,7 +67,7 @@ class AppStreamlit:
             return df_comparado
 
         df_comparado = join_df(IPCA, self.df_ipca, 'Ipca')
-        df_comparado = join_df(SALARIO_MINIMO, self.df_salario, 'Salario Mínimo')
+        df_comparado = join_df(REMUNERACAO_DEFLACIONADA, self.df_salario, 'Remuneração Média Deflacionada')
         df_comparado = join_df(IGPM, self.df_igpm, 'Igpm')
         df_comparado = join_df(INADIMPLENCIA, self.df_inad, 'Inadimplência')
         df_comparado = join_df(INADIMPLENCIA_FAMILIA, self.df_inad_familia, 'Inadimplência Familiar')

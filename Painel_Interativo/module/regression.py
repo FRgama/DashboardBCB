@@ -4,8 +4,9 @@ import plotly.express as px
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import r2_score, mean_absolute_error, mean_squared_error
+from sklearn.metrics import r2_score, mean_absolute_error
 from statsmodels.stats.outliers_influence import variance_inflation_factor
+from sklearn.metrics import root_mean_squared_error
 
 class Regressao:
     def exibir_regressao_linear(self, df):
@@ -40,7 +41,7 @@ class Regressao:
 
                 r2 = r2_score(y_test, y_pred)
                 mae = mean_absolute_error(y_test, y_pred)
-                rmse = mean_squared_error(y_test, y_pred, squared=False)
+                rmse = root_mean_squared_error(y_test, y_pred)
 
                 st.markdown(f"### Avaliação do Modelo")
                 st.write(f"**R² (coeficiente de determinação):** {r2:.2f}")

@@ -15,7 +15,7 @@ def carregar_dados():
 
     dfSelic = obter_dado(1178, 'Selic')
     dfIpca = obter_dado(433, 'Ipca')
-    dfSMin = obter_dado(1619, 'Salario Mínimo')
+    dfSMin = obter_dado(24381, 'Remuneração Média Deflacionada')
     dfIgpm = obter_dado(189, 'Igpm')
     dfInad = obter_dado(21082, 'Inadimplência')
     dfInadFamilia = obter_dado(29038, 'Inadimplência Familiar')
