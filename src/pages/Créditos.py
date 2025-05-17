@@ -6,7 +6,7 @@ st.markdown("""
 
 
 
-### Integrantes:-
+### Integrantes:
 - **Beatriz de Souza Santos Rio Branco**  
 - **Sátiro Gabriel de Souza Santos**  
 - **Sabrinna Cristina Gomes Vicente**  
