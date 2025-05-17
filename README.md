@@ -23,8 +23,6 @@ Desenvolvida com Plotly Dash, a plataforma permite visualizar tendências macroe
 
 Além de ser uma ferramenta de apoio à tomada de decisão, o projeto é modular, documentado e preparado para expansões futuras, como análise setorial específica, notificações personalizadas e integração com sistemas internos corporativos.
 
-<p align="center">
-<img src="imagens/NubankLogo.png" alt="Nubank" border="0">
 
 ## 🛠 Estrutura de pastas
 
@@ -44,7 +42,6 @@ Além de ser uma ferramenta de apoio à tomada de decisão, o projeto é modular
     &emsp;|-->ES & AS<br>
  &emsp;|-->Entrega 3<br>
 |-->imagens<br>
-  &emsp;|-->NubankLogo.png
 |-->src<br>
   &emsp;|-->_pycache_<br>
   &emsp;|-->modules<br>
