@@ -77,8 +77,7 @@ Aqui estão as referências usadas no projeto.
 3. <https://creativecommons.org/share-your-work/>
 4. <https://www.bcb.gov.br/>
 
-## Links 
-<a href="https://www.figma.com/design/uMM3LvFLiuEK1jBQe9t8o7/Painel-NEON?node-id=6-228&t=xY0Vfuu9iFxM4w2r-1">Figma</a>
+
 
 
 
