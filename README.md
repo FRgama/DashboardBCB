@@ -13,7 +13,7 @@
 ## Descrição
 
 <p align="center">
-<img src="imagens/NubankLogo.png" alt="Nubank" border="0">
+<img src="imagens/EconoVisionLogo.png" alt="EconoVision" border="0">
 
 EconoVision é uma iniciativa acadêmica desenvolvida com o objetivo de demonstrar o potencial da predição de dados macroeconômicos disponibilizados pelo Banco Central do Brasil. Por meio de uma plataforma interativa, o projeto foca em apoiar estrategicamente empresas do setor financeiro — como a Nubank — na análise e antecipação de cenários econômicos.
 
@@ -21,9 +21,10 @@ A solução integra dados oficiais, como SELIC, IPCA, taxa de câmbio e inadimpl
 
 Desenvolvida com Plotly Dash, a plataforma permite visualizar tendências macroeconômicas em tempo real, realizar simulações e interpretar comportamentos do mercado de maneira intuitiva e acessível. Mesmo usuários sem conhecimento técnico podem extrair insights valiosos para suas estratégias financeiras.
 
-<a>
-O objetivo é analisar e prever indicadores econômicos relevantes, contribuindo para que empresas do setor financeiro tomem decisões informadas e se preparem melhor para diferentes cenários do mercado.  
-</a>
+Além de ser uma ferramenta de apoio à tomada de decisão, o projeto é modular, documentado e preparado para expansões futuras, como análise setorial específica, notificações personalizadas e integração com sistemas internos corporativos.
+
+<p align="center">
+<img src="imagens/NubankLogo.png" alt="Nubank" border="0">
 
 ## 🛠 Estrutura de pastas
 
@@ -42,11 +43,13 @@ O objetivo é analisar e prever indicadores econômicos relevantes, contribuindo
     &emsp;|-->Contabilidade<br> 
     &emsp;|-->ES & AS<br>
  &emsp;|-->Entrega 3<br>
-|-->Painel_Interativo<br>
+|-->imagens<br>
+  &emsp;|-->NubankLogo.png
+|-->src<br>
   &emsp;|-->_pycache_<br>
+  &emsp;|-->modules<br>
+     &emsp;|-->_pycache_<br>
   &emsp;|-->pages<br>
-|-->Python<br>
-  &emsp;|-->_pycache_<br>
 |-->imagens<br>
 |Projeto1.sln<br>
 |readme.md<br>
@@ -75,6 +78,7 @@ Aqui estão as referências usadas no projeto.
 1. <https://github.com/iuricode/readme-template>
 2. <https://github.com/gabrieldejesus/readme-model>
 3. <https://creativecommons.org/share-your-work/>
+4. <https://www.bcb.gov.br/>
 
 ## Links 
 <a href="https://www.figma.com/design/uMM3LvFLiuEK1jBQe9t8o7/Painel-NEON?node-id=6-228&t=xY0Vfuu9iFxM4w2r-1">Figma</a>
