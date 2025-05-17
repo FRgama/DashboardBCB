@@ -53,7 +53,7 @@ Além de ser uma ferramenta de apoio à tomada de decisão, o projeto é modular
 
 ## 🛠 Instalação
 
-Não há instalação!
+Não há instalação! O Projeto está hospedado e pode ser acessado <a href="https://dashboard-bcb.streamlit.app/">Clicando Aqui</a>
 
 ## 💻 Configuração para Desenvolvimento
 
