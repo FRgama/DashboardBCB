@@ -43,13 +43,13 @@ Além de ser uma ferramenta de apoio à tomada de decisão, o projeto é modular
  &emsp;|-->Entrega 3<br>
 |-->imagens<br>
 |-->src<br>
-  &emsp;|-->_pycache_<br>
-  &emsp;|-->modules<br>
-     &emsp;|-->_pycache_<br>
-  &emsp;|-->pages<br>
+   &emsp;|-->_pycache_<br>
+   &emsp;|-->modules<br>
+       &emsp;|-->_pycache_<br>
+   &emsp;|-->pages<br>
 |-->imagens<br>
-|Projeto1.sln<br>
 |readme.md<br>
+|requirements.txt<br>
 
 ## 🛠 Instalação
 
@@ -76,6 +76,7 @@ Aqui estão as referências usadas no projeto.
 2. <https://github.com/gabrieldejesus/readme-model>
 3. <https://creativecommons.org/share-your-work/>
 4. <https://www.bcb.gov.br/>
+5. <https://github.com/streamlit/streamlit>
 
 
 
