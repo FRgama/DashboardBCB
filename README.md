@@ -55,13 +55,39 @@ Além de ser uma ferramenta de apoio à tomada de decisão, o projeto é modular
 
 Não há instalação! O Projeto está hospedado e pode ser acessado <a href="https://dashboard-bcb.streamlit.app/">Clicando Aqui</a>
 
-## 💻 Configuração para Desenvolvimento
+# 💻 Configuração para Desenvolvimento
 
-Para abrir este projeto você necessita das seguintes ferramentas:
+Para rodar este projeto localmente, siga os passos abaixo:
 
--<a href="https://www.r-project.org/">R</a>
+## ✅ Pré-requisitos
 
--<a href="https://posit.co/download/rstudio-desktop/">RStudio</a>
+- [Python](https://www.python.org/downloads/) instalado em sua máquina.
+- Uma IDE de sua preferência (como VS Code, PyCharm, etc).
+- Pip (gerenciador de pacotes do Python).
+
+## 📦 Instalação das Dependências
+
+Na raiz do projeto, execute o seguinte comando para instalar as dependências listadas no `requirements.txt`:
+
+```bash
+pip install -r requirements.txt
+```
+
+## Iniciando o Dashboard
+
+Navegue até o diretório
+
+```
+cd src
+```
+
+Inicie o Dashboard
+
+```
+streamlit run dashboard.py
+```
+
+
 
 ## 📋 Licença/License
 Este projeto está licenciado sob a licença CC BY 4.0.
