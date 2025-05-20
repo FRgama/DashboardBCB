@@ -4,6 +4,7 @@ import plotly.express as px
 class Graficos:
     def exibir_grafico_linha(self, df):
         st.subheader('Gráfico de Linha')
+        st.text("Gráfico de evolução de todos os indicadores selecionados")
         if df.empty:
             st.error("Não há dados para o gráfico de linha.")
             return
@@ -28,6 +29,7 @@ class Graficos:
 
     def exibir_grafico_barras(self, df):
         st.subheader('Gráfico de Barras')
+        st.text("Evolução individual do indicador selecionado")
         if df.empty:
             st.error("Não há dados para o gráfico de barras.")
             return

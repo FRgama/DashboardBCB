@@ -16,7 +16,7 @@ class Regressao:
             target = st.selectbox("Selecione o indicador a ser previsto (variável dependente):", df.columns[1:], key="reg_target")
             features = st.multiselect("Selecione as variáveis preditoras (independentes):", [col for col in df.columns[1:] if col != target], key="reg_features")
         
-            st.markdown("Selecione dois ou mais indicadores (independentes) para análise de regressão")
+            st.warning("Selecione pelo menos dois indicadores (independentes) para análise de regressão")
             if features and st.button("Executar Regressão"):
 
                 df_modelo = df.dropna(subset=[target] + features)
