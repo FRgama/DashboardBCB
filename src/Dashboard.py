@@ -4,6 +4,13 @@ from module.PreparacaoDeDados import carregar_dados
 from module.graph import Graficos
 from module.regression import Regressao
 
+st.set_page_config(
+            page_title="EconoVision",
+            layout="centered",
+            page_icon='../imagens/EconoVisionLogo.png',
+            menu_items={}
+        )
+
 SELIC = 'Selic'
 IPCA = 'IPCA'
 REMUNERACAO_DEFLACIONADA = 'Remuneração Média Deflacionada'
@@ -20,12 +27,20 @@ class AppStreamlit:
         self.regressao = Regressao()
 
     def exibir(self):
-        st.set_page_config(layout='wide')
+        
         st.title('Painel de Indicadores Econômicos')
-
+        st.markdown(
+            """
+            <p> Para informações a respeito dos indicadores e dos gráficos acesse: <a href='pages\Resumo.py' targe='_self' style='color:blue'>Resumo</a></p>
+            
+            """
+        ,unsafe_allow_html=True)
+        st.sidebar.image('../imagens/EconoVisionLogo.png')
         st.sidebar.title("Seleção de Indicadores")
         indicadores = [SELIC, IPCA, REMUNERACAO_DEFLACIONADA, IGPM, INADIMPLENCIA, INADIMPLENCIA_FAMILIA, CREDITO_TOTAL, DOLAR]
         selecionados = st.sidebar.multiselect("Escolha os Indicadores para comparação", indicadores)
+        if not selecionados:
+            st.warning("Selecione pelo menos um indicador para comparação.")
 
         df_base = self.df_selic.copy()
         df_base['Data'] = pd.to_datetime(df_base['Data'], errors='coerce')
@@ -33,14 +48,29 @@ class AppStreamlit:
         data_maxima = df_base['Data'].max().replace(day=1)
 
         data_inicial = st.sidebar.date_input("A partir de:", data_minima, min_value=data_minima, max_value=data_maxima)
+        st.sidebar.markdown(
+            """
+            <hr style="margin-top: 20px;">
+            <div style="text-align: center; font-size: 0.8em;">
+                <a href="https://creativecommons.org">EconoVision</a> © 1999 por 
+                <a href="https://creativecommons.org">Rodrigo Correa da Gama, Beatriz de Souza Santos Rio Branco, Sátiro Gabriel de Souza Santos, Sabrinna Cristina Gomes Vicente</a> 
+                está licenciado sob 
+                <a href="https://creativecommons.org/licenses/by-sa/4.0/" style="color:#1f77b4;">CC BY-SA 4.0</a>
+                <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+                <img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+                <img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" style="max-width: 1em;max-height:1em;margin-left: .2em;">
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
         if selecionados:
             data_inicial = pd.to_datetime(data_inicial).replace(day=1)
             df = self._preparar_comparacao(selecionados, data_inicial)
 
             self.graficos.exibir_grafico_linha(df)
-            self.graficos.exibir_grafico_dispersao(df)
             self.graficos.exibir_grafico_barras(df)
+            self.graficos.exibir_grafico_dispersao(df)
             self.graficos.exibir_grafico_boxplot(df)
             self.graficos.exibir_matriz_correlacao(df)
 
