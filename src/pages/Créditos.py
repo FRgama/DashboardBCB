@@ -1,7 +1,8 @@
 import streamlit as st
 
 st.title("Sobre o Projeto")
-st.sidebar.image('../imagens/EconoVisionLogo.png')
+st.sidebar.image('https://raw.githubusercontent.com/FRgama/EconoVision/main/imagens/EconoVisionLogo.png'
+        )
 st.sidebar.markdown(
             """
             <hr style="margin-top: 20px;">

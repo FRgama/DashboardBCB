@@ -10,7 +10,8 @@ for df in dfs[1:]:
     df_merged = pd.merge(df_merged, df, on="Data", how="inner")
 
 st.title("Resumo e Interpretações de Indicadores Econômicos")
-st.sidebar.image('../imagens/EconoVisionLogo.png')
+st.sidebar.image('https://raw.githubusercontent.com/FRgama/EconoVision/main/imagens/EconoVisionLogo.png'
+        )
 st.sidebar.markdown(
             """
             <hr style="margin-top: 20px;">

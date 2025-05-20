@@ -35,7 +35,8 @@ class AppStreamlit:
             
             """
         ,unsafe_allow_html=True)
-        st.sidebar.image('../imagens/EconoVisionLogo.png')
+        st.sidebar.image('https://raw.githubusercontent.com/FRgama/EconoVision/main/imagens/EconoVisionLogo.png'
+        )
         st.sidebar.title("Seleção de Indicadores")
         indicadores = [SELIC, IPCA, REMUNERACAO_DEFLACIONADA, IGPM, INADIMPLENCIA, INADIMPLENCIA_FAMILIA, CREDITO_TOTAL, DOLAR]
         selecionados = st.sidebar.multiselect("Escolha os Indicadores para comparação", indicadores)
